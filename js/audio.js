@@ -1,6 +1,9 @@
-// Procedural Web Audio: punches, bell, crowd, pub ambience. No asset files needed.
+// Procedural Web Audio: punches, bell, crowd cheers. No asset files needed.
 class AudioSys {
-  constructor() { this.ctx = null; this.crowdLevel = 0; this.enabled = true; }
+  constructor() {
+    this.ctx = null; this.baseCrowd = 0;
+    try { this.muted = localStorage.getItem('lastorders.muted') === '1'; } catch { this.muted = false; }
+  }
 
   init() {
     if (this.ctx) { if (this.ctx.state === 'suspended') this.ctx.resume(); return; }
@@ -15,52 +18,24 @@ class AudioSys {
     this.white = ctx.createBuffer(1, len, ctx.sampleRate);
     const d = this.white.getChannelData(0);
     for (let i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
-    this.brown = ctx.createBuffer(1, len, ctx.sampleRate);
-    const b = this.brown.getChannelData(0); let last = 0;
-    for (let i = 0; i < len; i++) { last = (last + 0.02 * (Math.random() * 2 - 1)) / 1.02; b[i] = last * 3.5; }
-    this._crowd();
-    this._room();
+    this.master.gain.value = this.muted ? 0 : 0.8;
   }
 
   _noise(buf, loop = true) { const s = this.ctx.createBufferSource(); s.buffer = buf; s.loop = loop; return s; }
 
-  _crowd() {
-    const ctx = this.ctx;
-    const src = this._noise(this.brown);
-    const bp = ctx.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 520; bp.Q.value = 0.6;
-    const bp2 = ctx.createBiquadFilter(); bp2.type = 'peaking'; bp2.frequency.value = 1200; bp2.gain.value = 6;
-    this.crowdGain = ctx.createGain(); this.crowdGain.gain.value = 0;
-    // murmur LFO
-    const lfo = ctx.createOscillator(); lfo.frequency.value = 0.31;
-    const lg = ctx.createGain(); lg.gain.value = 0.15;
-    lfo.connect(lg); lg.connect(this.crowdGain.gain);
-    src.connect(bp); bp.connect(bp2); bp2.connect(this.crowdGain); this.crowdGain.connect(this.master);
-    src.start(); lfo.start();
-  }
+  // No constant background loops (they read as a whooshing hiss); the venue only decides whether the crowd cheers.
+  setAmbience(kind) { this.baseCrowd = kind === 'fight' || kind === 'fightSmall' ? 1 : 0; }
 
-  _room() {
-    // low hum / rain for pub
-    const ctx = this.ctx;
-    const rain = this._noise(this.white);
-    const hp = ctx.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 2500;
-    const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 7000;
-    this.rainGain = ctx.createGain(); this.rainGain.gain.value = 0;
-    rain.connect(hp); hp.connect(lp); lp.connect(this.rainGain); this.rainGain.connect(this.master);
-    rain.start();
+  setMuted(m) {
+    this.muted = m;
+    try { localStorage.setItem('lastorders.muted', m ? '1' : '0'); } catch { }
+    if (this.ctx) this.master.gain.setTargetAtTime(m ? 0 : 0.8, this.ctx.currentTime, 0.02);
   }
-
-  setAmbience(kind) {
-    if (!this.ctx) return;
-    const t = this.ctx.currentTime;
-    const crowd = kind === 'fight' ? 0.55 : kind === 'fightSmall' ? 0.3 : kind === 'pub' ? 0.09 : 0;
-    const rain = kind === 'pub' ? 0.035 : kind === 'gym' ? 0.02 : 0;
-    this.crowdGain.gain.setTargetAtTime(crowd, t, 0.8);
-    this.rainGain.gain.setTargetAtTime(rain, t, 0.8);
-    this.baseCrowd = crowd;
-  }
+  toggleMute() { this.setMuted(!this.muted); return this.muted; }
 
   cheer(amount = 1) {
     if (!this.ctx || !this.baseCrowd) return;
+    amount *= 0.8;
     const ctx = this.ctx, t = ctx.currentTime;
     const src = this._noise(this.white, false);
     const bp = ctx.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 900 + Math.random() * 400; bp.Q.value = 0.8;

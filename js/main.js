@@ -32,10 +32,27 @@ async function boot() {
   setupPubCast();
   setupPubCamera();
   engine.setScene(game.pub);
+  setupMute();
   window.addEventListener('pointerdown', () => audio.init(), { once: false });
   window.addEventListener('keydown', () => audio.init());
   setTimeout(() => { $('loading').style.opacity = 0; setTimeout(() => $('loading').remove(), 900); }, 300);
   titleScreen();
+}
+
+// Sound toggle: corner button + M key, remembered between visits
+function setupMute() {
+  const btn = $('mute');
+  const ON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg>';
+  const OFF = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4z"/><path d="m22 9-6 6"/><path d="m16 9 6 6"/></svg>';
+  const paint = () => { btn.innerHTML = audio.muted ? OFF : ON; btn.classList.toggle('off', audio.muted); btn.setAttribute('aria-label', audio.muted ? 'Unmute sound' : 'Mute sound'); };
+  const toggle = () => { audio.init(); const m = audio.toggleMute(); paint(); ui.toast(m ? 'Sound off' : 'Sound on', !m, 1200); };
+  btn.addEventListener('click', e => { e.stopPropagation(); toggle(); btn.blur(); });
+  window.addEventListener('keydown', e => {
+    if (e.code !== 'KeyM' || e.repeat) return;
+    const a = document.activeElement; if (a && (a.tagName === 'INPUT' || a.tagName === 'TEXTAREA')) return;
+    toggle();
+  });
+  paint();
 }
 
 function venue(theme) {

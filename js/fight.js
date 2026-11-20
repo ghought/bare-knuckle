@@ -717,5 +717,5 @@ function dampAngle(a, b, k, dt) {
 
 export function controlsHtml() {
   return `<b>W A S D</b><span>Move / circle</span><b>J</b><span>Jab (lead hand)</span><b>K</b><span>Cross (rear hand)</span><b>L</b><span>Left hook</span><b>I</b><span>Uppercut</span>
-  <b>SHIFT</b><span>Hold with a punch to go to the body</span><b>SPACE</b><span>Block (hold) · mash when down to get up</span><b>Q / E</b><span>Slip left / right — then counter</span><b>C</b><span>Switch camera</span><b>ESC</b><span>Pause</span>`;
+  <b>SHIFT</b><span>Hold with a punch to go to the body</span><b>SPACE</b><span>Block (hold) · mash when down to get up</span><b>Q / E</b><span>Slip left / right — then counter</span><b>C</b><span>Switch camera</span><b>M</b><span>Mute / unmute sound</span><b>ESC</b><span>Pause</span>`;
 }

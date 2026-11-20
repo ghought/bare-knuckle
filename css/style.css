@@ -200,3 +200,9 @@ table.league tr.promo td:first-child { box-shadow: inset 3px 0 0 var(--green); }
   .hub .bottom { grid-column: 1 / 3; grid-row: 3; }
   .create { right: 16px; left: 16px; width: auto; }
 }
+
+/* ---------- Mute toggle ---------- */
+#mute { position: fixed; right: 16px; bottom: 16px; width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--panel-line); background: rgba(10, 8, 7, .78); color: var(--paper); cursor: pointer; z-index: 45; display: flex; align-items: center; justify-content: center; padding: 0; transition: background .15s, border-color .15s; }
+#mute:hover { border-color: var(--blood); background: rgba(200, 16, 46, .3); }
+#mute svg { width: 20px; height: 20px; }
+#mute.off { color: var(--blood); }
