@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Last Orders: Bare Knuckle</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow+Condensed:wght@400;600;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="ui">
+  <div id="screen"></div>
+  <div id="hud" class="hidden">
+    <div class="hud-top">
+      <div class="bar-block left">
+        <div class="fname" id="hud-pname">YOU</div>
+        <div class="bar hp"><div class="fill" id="hud-php"></div><div class="ghost" id="hud-phpg"></div></div>
+        <div class="bar st"><div class="fill" id="hud-pst"></div><div class="cap" id="hud-pstcap"></div></div>
+      </div>
+      <div class="clock">
+        <div class="round" id="hud-round">ROUND 1</div>
+        <div class="time" id="hud-time">1:00</div>
+      </div>
+      <div class="bar-block right">
+        <div class="fname" id="hud-oname">OPPONENT</div>
+        <div class="bar hp"><div class="fill" id="hud-ohp"></div><div class="ghost" id="hud-ohpg"></div></div>
+        <div class="bar st"><div class="fill" id="hud-ost"></div><div class="cap" id="hud-ostcap"></div></div>
+      </div>
+    </div>
+    <div id="hud-callout"></div>
+    <div id="hud-count"></div>
+    <div id="hud-getup" class="hidden"><div class="label">MASH <b>SPACE</b> TO GET UP</div><div class="meter"><div class="fill" id="hud-getupfill"></div></div></div>
+    <div id="hud-tip"></div>
+    <div id="hud-keys">
+      <span><b>WASD</b> move</span><span><b>J</b> jab</span><span><b>K</b> cross</span><span><b>L</b> hook</span><span><b>I</b> uppercut</span><span><b>SHIFT</b>+punch body</span><span><b>SPACE</b> block</span><span><b>Q/E</b> slip</span><span><b>C</b> camera</span>
+    </div>
+  </div>
+  <div id="dialogue" class="hidden">
+    <div class="dlg-box">
+      <div class="dlg-speaker"></div>
+      <div class="dlg-text"></div>
+      <div class="dlg-choices"></div>
+      <div class="dlg-next">▸ click / space</div>
+    </div>
+  </div>
+  <div id="toast"></div>
+  <div id="fade"></div>
+  <div id="loading"><div class="title">LAST ORDERS</div><div class="sub">pulling pints…</div></div>
+</div>
+<script type="module" src="js/main.js"></script>
+</body>
+</html>
